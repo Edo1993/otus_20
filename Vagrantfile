@@ -1,0 +1,73 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+
+MACHINES = {
+  :inetRouter => {
+        :box_name => "centos/7",
+        :net => [
+                   {adapter: 2, auto_config: false, virtualbox__intnet: "router-net"},
+		   {adapter: 3, auto_config: false, virtualbox__intnet: "router-net"},
+                ]
+  },
+  :centralRouter => {
+        :box_name => "centos/7",
+        :net => [
+                   {adapter: 2, auto_config: false, virtualbox__intnet: "router-net"},
+		   {adapter: 3, auto_config: false, virtualbox__intnet: "router-net"},
+                   {adapter: 4, auto_config: false, virtualbox__intnet: "test-lan"},
+                ]
+  },
+  :testClient1 => {
+        :box_name => "centos/7",
+        :net => [
+		   {adapter: 2, auto_config: false, virtualbox__intnet: "test-lan"}
+                ]
+  },
+  :testClient2 => {
+        :box_name => "centos/7",
+        :net => [
+                   {adapter: 2, auto_config: false, virtualbox__intnet: "test-lan"}
+                ]
+  },
+  :testServer1 => {
+        :box_name => "centos/7",
+        :net => [
+		   {adapter: 2, auto_config: false, virtualbox__intnet: "test-lan"}
+                ]
+  },
+  :testServer2 => {
+        :box_name => "centos/7",
+        :net => [
+		   {adapter: 2, auto_config: false, virtualbox__intnet: "test-lan"}
+                ]
+  },
+}
+
+Vagrant.configure("2") do |config|
+
+  MACHINES.each do |boxname, boxconfig|
+
+      config.vm.define boxname do |box|
+
+          box.vm.box = boxconfig[:box_name]
+          box.vm.host_name = boxname.to_s
+
+          boxconfig[:net].each do |ipconf|
+            box.vm.network "private_network", ipconf
+          end
+
+          box.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "512"]
+          end
+
+          box.vm.provision :shell do |s|
+             s.inline = 'mkdir -p ~root/.ssh; cp ~vagrant/.ssh/auth* ~root/.ssh'
+          end
+      end
+  end
+  config.vm.provision "ansible" do |ansible|
+  ansible.verbose = "vvv"
+  ansible.playbook = "playbook.yml"
+  ansible.become = "true"
+  end
+end
