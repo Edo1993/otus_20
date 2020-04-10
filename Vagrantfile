@@ -3,71 +3,94 @@
 
 MACHINES = {
   :inetRouter => {
-        :box_name => "centos/7",
+        :box_name => "centos/6",
+        #:public => {:ip => '10.10.10.1', :adapter => 1},
         :net => [
-                   {adapter: 2, auto_config: false, virtualbox__intnet: "router-net"},
-		   {adapter: 3, auto_config: false, virtualbox__intnet: "router-net"},
+                   {adapter: 2, virtualbox__intnet: "router-net"},
+                   {adapter: 3, virtualbox__intnet: "router-net"},
                 ]
   },
   :centralRouter => {
         :box_name => "centos/7",
         :net => [
-                   {adapter: 2, auto_config: false, virtualbox__intnet: "router-net"},
-		   {adapter: 3, auto_config: false, virtualbox__intnet: "router-net"},
-                   {adapter: 4, auto_config: false, virtualbox__intnet: "test-lan"},
+                   {adapter: 2, virtualbox__intnet: "router-net"},
+                   {adapter: 3, virtualbox__intnet: "router-net"},
+                   {adapter: 4, virtualbox__intnet: "testLAN"},
                 ]
   },
+  
   :testClient1 => {
         :box_name => "centos/7",
         :net => [
-		   {adapter: 2, auto_config: false, virtualbox__intnet: "test-lan"}
+                   {adapter: 2, virtualbox__intnet: "testLAN"},
                 ]
   },
   :testClient2 => {
         :box_name => "centos/7",
         :net => [
-                   {adapter: 2, auto_config: false, virtualbox__intnet: "test-lan"}
+                   {adapter: 2, virtualbox__intnet: "testLAN"},
                 ]
   },
   :testServer1 => {
         :box_name => "centos/7",
         :net => [
-		   {adapter: 2, auto_config: false, virtualbox__intnet: "test-lan"}
+                   {adapter: 2, virtualbox__intnet: "testLAN"},
                 ]
   },
   :testServer2 => {
         :box_name => "centos/7",
         :net => [
-		   {adapter: 2, auto_config: false, virtualbox__intnet: "test-lan"}
+                   {adapter: 2, virtualbox__intnet: "testLAN"},
                 ]
   },
+  
 }
 
 Vagrant.configure("2") do |config|
 
   MACHINES.each do |boxname, boxconfig|
 
-      config.vm.define boxname do |box|
+    config.vm.define boxname do |box|
 
-          box.vm.box = boxconfig[:box_name]
-          box.vm.host_name = boxname.to_s
+        box.vm.box = boxconfig[:box_name]
+        box.vm.host_name = boxname.to_s
 
-          boxconfig[:net].each do |ipconf|
-            box.vm.network "private_network", ipconf
-          end
+        boxconfig[:net].each do |ipconf|
+          box.vm.network "private_network", ipconf
+        end
+        
+        if boxconfig.key?(:public)
+          box.vm.network "public_network", boxconfig[:public]
+        end
+        
+        case boxname.to_s
+        when "inetRouter"
+          box.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+          end            
+        when "centralRouter"
+           box.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+          end            
+        when "testClient1"
+          box.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+          end            
+        when "testClient2"
+          box.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+          end            
+        when "testServer1"
+          box.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+          end            
+        when "testServer2"
+          box.vm.provision "ansible" do |ansible|
+            ansible.playbook = "playbook.yml"
+          end            
+        end
 
-          box.vm.provider :virtualbox do |vb|
-            vb.customize ["modifyvm", :id, "--memory", "512"]
-          end
-
-          box.vm.provision :shell do |s|
-             s.inline = 'mkdir -p ~root/.ssh; cp ~vagrant/.ssh/auth* ~root/.ssh'
-          end
       end
-  end
-  config.vm.provision "ansible" do |ansible|
-  ansible.verbose = "vvv"
-  ansible.playbook = "playbook.yml"
-  ansible.become = "true"
+
   end
 end
