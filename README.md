@@ -133,6 +133,8 @@ Link Failure Count: 0
 Permanent HW addr: 08:00:27:53:7c:bc
 Slave queue ID: 0
 ```
+![Img_alt](https://github.com/Edo1993/otus_20/blob/master/img/205.png)
+
 Смотрим centralRouter.
 ```
 vagrant ssh centralRouter
@@ -167,6 +169,8 @@ Link Failure Count: 0
 Permanent HW addr: 08:00:27:21:66:33
 Slave queue ID: 0
 ```
+![Img_alt](https://github.com/Edo1993/otus_20/blob/master/img/206.png)
+
 Отключаем eth2.
 ```
 ifdown eth2
@@ -215,3 +219,4 @@ PING 192.168.255.2 (192.168.255.2) 56(84) bytes of data.
 5 packets transmitted, 5 received, 0% packet loss, time 3996ms
 rtt min/avg/max/mdev = 0.028/0.043/0.051/0.008 ms
 ```
+![Img_alt](https://github.com/Edo1993/otus_20/blob/master/img/204.png)
