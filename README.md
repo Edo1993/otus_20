@@ -95,3 +95,123 @@ ip neigh
 ```
 ![Img_alt](https://github.com/Edo1993/otus_20/blob/master/img/203.png)
 
+____________________________________________
+
+Bond
+
+Смотрим inetRouter.
+```
+vagrant ssh inetRouter
+sudo su
+more /proc/net/bonding/bond0
+```
+Ответ
+```
+Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+
+Bonding Mode: fault-tolerance (active-backup)
+Primary Slave: None
+Currently Active Slave: eth1
+MII Status: up
+MII Polling Interval (ms): 1
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: eth1
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 08:00:27:c6:b5:c1
+Slave queue ID: 0
+
+Slave Interface: eth2
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 08:00:27:53:7c:bc
+Slave queue ID: 0
+```
+Смотрим centralRouter.
+```
+vagrant ssh centralRouter
+sudo su
+more /proc/net/bonding/bond0
+```
+Ответ
+```
+Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+
+Bonding Mode: fault-tolerance (active-backup)
+Primary Slave: None
+Currently Active Slave: eth1
+MII Status: up
+MII Polling Interval (ms): 1
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: eth1
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 08:00:27:c8:5f:93
+Slave queue ID: 0
+
+Slave Interface: eth2
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 08:00:27:21:66:33
+Slave queue ID: 0
+```
+Отключаем eth2.
+```
+ifdown eth2
+```
+Device 'eth2' successfully disconnected.
+Проверяем состояние
+```
+cat /proc/net/bonding/bond0
+```
+Ответ
+```
+Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+
+Bonding Mode: fault-tolerance (active-backup)
+Primary Slave: None
+Currently Active Slave: eth1
+MII Status: up
+MII Polling Interval (ms): 1
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: eth1
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 08:00:27:c8:5f:93
+Slave queue ID: 0
+```
+После этого на inetRouter проверяем пинг
+```
+vagrant ssh inetRouter
+sudo su
+ping -c5 192.168.255.2
+```
+Ответ
+```
+PING 192.168.255.2 (192.168.255.2) 56(84) bytes of data.
+64 bytes from 192.168.255.2: icmp_seq=1 ttl=64 time=0.051 ms
+64 bytes from 192.168.255.2: icmp_seq=2 ttl=64 time=0.045 ms
+64 bytes from 192.168.255.2: icmp_seq=3 ttl=64 time=0.028 ms
+64 bytes from 192.168.255.2: icmp_seq=4 ttl=64 time=0.045 ms
+64 bytes from 192.168.255.2: icmp_seq=5 ttl=64 time=0.047 ms
+
+--- 192.168.255.2 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 3996ms
+rtt min/avg/max/mdev = 0.028/0.043/0.051/0.008 ms
+```
