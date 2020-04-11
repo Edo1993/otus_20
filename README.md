@@ -200,6 +200,8 @@ Link Failure Count: 0
 Permanent HW addr: 08:00:27:c8:5f:93
 Slave queue ID: 0
 ```
+![Img_alt](https://github.com/Edo1993/otus_20/blob/master/img/207.png)
+
 После этого на inetRouter проверяем пинг
 ```
 vagrant ssh inetRouter
