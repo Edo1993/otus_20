@@ -1,6 +1,12 @@
 ---
-- hosts: all
-  name: vlan&bond
+- hosts: inetRouter:centralRouter
+  name: bond for routers
   become: yes
   roles:
-    - role: vlan&bond
+    - role: bond
+
+- hosts: testClient1:testClient2:testServer1:testServer2
+  name: vlan for tests
+  become: yes
+  roles:
+    - role: vlan
