@@ -59,35 +59,9 @@ Vagrant.configure("2") do |config|
           box.vm.network "private_network", ipconf
         end
         
-        if boxconfig.key?(:public)
-          box.vm.network "public_network", boxconfig[:public]
-        end
-        
-        case boxname.to_s
-        when "inetRouter"
-          box.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-          end            
-        when "centralRouter"
-           box.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-          end            
-        when "testClient1"
-          box.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-          end            
-        when "testClient2"
-          box.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-          end            
-        when "testServer1"
-          box.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-          end            
-        when "testServer2"
-          box.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-          end            
+        box.vm.provision "ansible" do |ansible|
+          ansible.playbook = "playbook.yml"
+          ansible.tags = "all"
         end
 
       end
