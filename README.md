@@ -38,6 +38,8 @@ ip -c a show eth1.10
     inet6 fe80::a00:27ff:fe3c:1ab6/64 scope link 
        valid_lft forever preferred_lft forever
 ```
+![Img_alt](https://github.com/Edo1993/otus_20/blob/master/img/201.png)
+
 Входим на *testClient1*
 
 ```
@@ -80,6 +82,8 @@ ip neigh
 10.0.2.2 dev eth0 lladdr 52:54:00:12:35:02 REACHABLE
 10.10.10.1 dev eth1.10 lladdr 08:00:27:3c:1a:b6 REACHABLE
 ```
+![Img_alt](https://github.com/Edo1993/otus_20/blob/master/img/202.png)
+
 Проверяем на *testServer1*
 ```
 ip neigh
@@ -89,3 +93,5 @@ ip neigh
 10.10.10.254 dev eth1.10 lladdr 08:00:27:69:d4:a5 REACHABLE
 10.0.2.2 dev eth0 lladdr 52:54:00:12:35:02 REACHABLE
 ```
+![Img_alt](https://github.com/Edo1993/otus_20/blob/master/img/203.png)
+
